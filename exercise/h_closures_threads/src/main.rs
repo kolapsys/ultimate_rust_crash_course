@@ -95,29 +95,25 @@ fn main() {
     let (tx, rx1) = channel::unbounded();
     let rx2 = rx1.clone();
 
-    let handle_rx1 = thread::spawn(move || {
-        println!();
-        print!("Child thread with RX1: Received: ");
+    let handle_rx1 = thread::spawn(|| {
+        println!("Thread for rx1 ready!");
         for msg in rx1 {
-            print!("{} ", msg);
+            println!("+ rx1 received: {} ", msg);
         }
-        println!();
     });
 
-    let handle_rx2 = thread::spawn(move || {
-        println!();
-        print!("Child thread with RX2: Received: ");
+    let handle_rx2 = thread::spawn(|| {
+        println!("Thread for rx2 ready!");
         for msg in rx2 {
-            print!("{}", msg);
+            println!("- rx2 received {}", msg);
         }
-        println!();
     });
 
+    pause_ms(100);
     for i in 0..=100 {
-        print!("{} ", i);
+        println!("Sending {}", i);
         tx.send(i).unwrap();
     }
-    println!();
 
     drop(tx);
 
